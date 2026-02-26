@@ -4,8 +4,8 @@
 use syn::{Expr, ItemFn};
 
 pub struct BackendOutput {
-    attrs: Option<Vec<proc_macro2::TokenStream>>,
-    harness: Option<proc_macro2::TokenStream>,
+    pub attrs: Option<Vec<proc_macro2::TokenStream>>,
+    pub harness: Option<proc_macro2::TokenStream>,
 }
 
 impl BackendOutput {
