@@ -11,6 +11,9 @@ pub fn contract(_args: TokenStream, input_fn: TokenStream) -> TokenStream {
     backends::kani::contract(_args, input_fn)
 }
 
+/// A marker that *cannot* be used alone.
+/// If applied without `kedge_contracts::contract`,
+/// this function will error.
 #[proc_macro_attribute]
 pub fn requires(_conditions: TokenStream, _input_fn: TokenStream) -> TokenStream {
     quote! {
@@ -26,6 +29,9 @@ pub fn requires(_conditions: TokenStream, _input_fn: TokenStream) -> TokenStream
     .into()
 }
 
+/// A marker that *cannot* be used alone.
+/// If applied without `kedge_contracts::contract`,
+/// this function will error.
 #[proc_macro_attribute]
 pub fn ensures(_conditions: TokenStream, _input_fn: TokenStream) -> TokenStream {
     quote! {
