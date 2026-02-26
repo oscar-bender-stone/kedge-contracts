@@ -7,3 +7,4 @@ edition = "2024"
 version.workspace = true
 
 [dependencies]
+proptest = { version = "1.10.0", features = ["proptest-macro"] }
