@@ -226,6 +226,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "kedge-contracts-core"
+version = "0.3.0"
+dependencies = [
+ "proc-macro2",
+ "syn",
+]
+
+[[package]]
 name = "kedge-contracts-tests"
 version = "0.3.0"
 dependencies = [

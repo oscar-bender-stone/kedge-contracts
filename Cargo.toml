@@ -3,13 +3,14 @@
 
 [workspace]
 members = [
-  "crates/kedge-contracts",
-  "crates/kedge-cli",
-  "crates/kedge-verify",
+  "crates/kedge-contracts-core",
   "crates/kedge-test",
+  "crates/kedge-verify",
+  "crates/kedge-contracts",
+  "crates/kedge-contracts-tests",
+  "crates/kedge-cli",
   "crates/kedge-synth",
   "crates/kedge-spec",
-  "crates/kedge-contracts-tests",
 ]
 resolver = "3"
 
