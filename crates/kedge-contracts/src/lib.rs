@@ -4,6 +4,7 @@
 mod backends;
 
 use proc_macro::TokenStream;
+use quote::quote;
 
 #[proc_macro_attribute]
 pub fn contract(_args: TokenStream, input_fn: TokenStream) -> TokenStream {
@@ -11,11 +12,31 @@ pub fn contract(_args: TokenStream, input_fn: TokenStream) -> TokenStream {
 }
 
 #[proc_macro_attribute]
-pub fn requires(conditions: TokenStream, input_fn: TokenStream) -> TokenStream {
-    backends::kani::requires(conditions, input_fn)
+pub fn requires(_conditions: TokenStream, _input_fn: TokenStream) -> TokenStream {
+    quote! {
+        compile_error!(
+            "The `#[requires]` attribute cannot be used alone. \n\
+             You must add `#[kedge_contracts::contract]` to the function.\n\
+             Example:\n   \
+                 #[kedge_contracts::contract]\n   \
+                 #[kedge_contracts::requires(x > 0)]\n   \
+                 fn my_func(x: i8) ..."
+        );
+    }
+    .into()
 }
 
 #[proc_macro_attribute]
-pub fn ensures(conditions: TokenStream, input_fn: TokenStream) -> TokenStream {
-    backends::kani::ensures(conditions, input_fn)
+pub fn ensures(_conditions: TokenStream, _input_fn: TokenStream) -> TokenStream {
+    quote! {
+        compile_error!(
+            "The `#[requires]` attribute cannot be used alone. \n\
+             You must add `#[kedge_contracts::contract]` to the function.\n\
+             Example:\n   \
+                 #[kedge_contracts::contract]\n   \
+                 #[kedge_contracts::ensures(x > 0)]\n   \
+                 fn my_func(x: i8) ..."
+        );
+    }
+    .into()
 }
