@@ -42,9 +42,6 @@ pub fn contract(_args: TokenStream, input_fn: TokenStream) -> TokenStream {
     });
 
     let fn_name = &input_fn.sig.ident;
-    let fn_vis = &input_fn.vis;
-    let fn_sig = &input_fn.sig;
-    let fn_block = &input_fn.block;
     let attrs = &input_fn.attrs;
 
     // Generate Kani attributes.
@@ -98,7 +95,7 @@ pub fn contract(_args: TokenStream, input_fn: TokenStream) -> TokenStream {
         #(#attrs)*
         #(#kani_requires)*
         #(#kani_ensures)*
-        #fn_vis #fn_sig #fn_block
+        #input_fn
         #harness
     }
     .into()
