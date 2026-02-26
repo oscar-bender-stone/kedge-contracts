@@ -4,25 +4,11 @@
 #![allow(unused)]
 extern crate flux_rs;
 
+use crate::validate::is_kedge_attr;
 use proc_macro::TokenStream;
 use quote::quote;
 use syn::{Attribute, Expr, FnArg, ItemFn, parse_macro_input};
 use syn::{Pat, ReturnType};
-
-fn is_kedge_attr(attr: &Attribute, attr_name: &str) -> bool {
-    let path = attr.path();
-
-    // Confirm there are exactly two segments,
-    // and that the first matche `kedge_contracts`
-    if path.segments.len() == 2 {
-        let first_segment = &path.segments[0];
-        let last_segment = &path.segments[1];
-
-        return first_segment.ident == "kedge_contracts" && last_segment.ident == attr_name;
-    }
-
-    false
-}
 
 // TODO: add support for structs and enums
 // TODO: support more complex conditions

@@ -1,28 +1,10 @@
 // SPDX-FileCopyrightText: 2026 Oscar Bender-Stone <oscar-bender-stone@protonmail.com>
 // SPDX-License-Identifier: MIT
 
+use crate::validate::is_kedge_attr;
 use proc_macro::TokenStream;
 use quote::quote;
 use syn::{Attribute, Expr, FnArg, ItemFn, parse_macro_input};
-
-/// Checks whether a given attribute
-/// comes from kedge-contracts.
-/// To avoid collisions with other crates,
-/// require that the *full path* be used
-fn is_kedge_attr(attr: &Attribute, attr_name: &str) -> bool {
-    let path = attr.path();
-
-    // Confirm there are exactly two segments,
-    // and that the first matche `kedge_contracts`
-    if path.segments.len() == 2 {
-        let first_segment = &path.segments[0];
-        let last_segment = &path.segments[1];
-
-        return first_segment.ident == "kedge_contracts" && last_segment.ident == attr_name;
-    }
-
-    false
-}
 
 pub fn contract(_args: TokenStream, input_fn: TokenStream) -> TokenStream {
     let mut input_fn = parse_macro_input!(input_fn as ItemFn);
