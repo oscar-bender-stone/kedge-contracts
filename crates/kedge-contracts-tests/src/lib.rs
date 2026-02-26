@@ -8,7 +8,7 @@ mod tests {
 
     #[kedge_contracts::requires(x > 0)]
     #[kedge_contracts::ensures(x > 0)]
-    fn my_test(x: int) -> int {
+    fn my_test(x: i8) -> i8 {
         x + 1
     }
 }

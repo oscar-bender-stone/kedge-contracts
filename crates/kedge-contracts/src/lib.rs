@@ -15,6 +15,7 @@ pub fn requires(conditions: TokenStream, input_fn: TokenStream) -> TokenStream {
     let conditions = proc_macro2::TokenStream::from(conditions);
 
     quote! {
+        #[cfg(kani)]
         #[kani::requires(#conditions)]
         #input_fn
     }
@@ -33,6 +34,7 @@ pub fn ensures(conditions: TokenStream, input_fn: TokenStream) -> TokenStream {
     let conditions = proc_macro2::TokenStream::from(conditions);
 
     quote! {
+        #[cfg(kani)]
         #[kani::requires(#conditions)]
         #input_fn
     }
