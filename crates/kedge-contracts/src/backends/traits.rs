@@ -3,8 +3,25 @@
 
 use syn::{Expr, ItemFn};
 
-trait Backend {
+pub struct BackendOutput {
+    attrs: Option<Vec<proc_macro2::TokenStream>>,
+    harness: Option<proc_macro2::TokenStream>,
+}
+
+impl BackendOutput {
+    pub fn new(
+        attrs: Option<Vec<proc_macro2::TokenStream>>,
+        harness: Option<proc_macro2::TokenStream>,
+    ) -> Self {
+        BackendOutput { attrs, harness }
+    }
+}
+
+pub trait Backend {
     /// Generates a specification, and optionally verification tests
-    fn generate(input_fn: &ItemFn, requires: &[Expr], ensures: &[Expr])
-    -> proc_macro2::TokenStream;
+    fn generate(
+        input_fn: &ItemFn,
+        requires_exprs: &[Expr],
+        ensures_exprs: &[Expr],
+    ) -> BackendOutput;
 }

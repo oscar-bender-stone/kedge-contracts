@@ -3,3 +3,4 @@
 
 pub mod flux;
 pub mod kani;
+pub mod traits;
