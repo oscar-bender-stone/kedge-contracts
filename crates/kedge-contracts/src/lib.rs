@@ -5,9 +5,8 @@ mod backends;
 mod validate;
 
 use crate::validate::is_kedge_attr;
-use backends::flux::FluxBackend;
-use backends::kani::KaniBackend;
-use backends::traits::Backend;
+use backends::verify::{flux::FluxBackend, kani::KaniBackend};
+use kedge_contracts_core::traits::Backend;
 use proc_macro::TokenStream;
 use quote::quote;
 use syn::{Expr, ItemFn, parse_macro_input};

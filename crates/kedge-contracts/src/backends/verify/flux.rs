@@ -4,8 +4,8 @@
 #![allow(unused)]
 extern crate flux_rs;
 
-use super::traits::{Backend, BackendOutput};
 use crate::validate::is_kedge_attr;
+use kedge_contracts_core::traits::{Backend, BackendOutput};
 use proc_macro::TokenStream;
 use quote::quote;
 use syn::{Attribute, Expr, FnArg, ItemFn, parse_macro_input};
