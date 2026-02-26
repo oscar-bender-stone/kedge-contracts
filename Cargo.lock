@@ -3,6 +3,32 @@
 version = 4
 
 [[package]]
+name = "flux-attrs"
+version = "0.1.0"
+source = "git+https://github.com/flux-rs/flux.git#59378955cd439bdbbff556f9f2ffcc50acb5401f"
+dependencies = [
+ "flux-attrs-impl",
+]
+
+[[package]]
+name = "flux-attrs-impl"
+version = "0.1.0"
+source = "git+https://github.com/flux-rs/flux.git#59378955cd439bdbbff556f9f2ffcc50acb5401f"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "flux-rs"
+version = "0.1.0"
+source = "git+https://github.com/flux-rs/flux.git#59378955cd439bdbbff556f9f2ffcc50acb5401f"
+dependencies = [
+ "flux-attrs",
+]
+
+[[package]]
 name = "heck"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -46,6 +72,7 @@ version = "0.1.0"
 name = "kedge-contracts"
 version = "0.1.0"
 dependencies = [
+ "flux-rs",
  "kani",
 ]
 
