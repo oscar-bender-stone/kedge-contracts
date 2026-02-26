@@ -8,10 +8,11 @@ members = [
   "crates/kedge-verify",
   "crates/kedge-test",
   "crates/kedge-synth",
-  "crates/kedge-spec", "crates/kedge-contracts-tests",
+  "crates/kedge-spec",
+  "crates/kedge-contracts-tests",
 ]
 resolver = "3"
 
 [workspace.package]
-version = "0.1.0"
+version = "0.2.0"
 license = "MIT"
