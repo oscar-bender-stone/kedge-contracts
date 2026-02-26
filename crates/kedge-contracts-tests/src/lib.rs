@@ -6,6 +6,9 @@ use kedge_contracts;
 #[cfg(test)]
 mod tests {
 
-    #[kedge_contracts::requires("test")]
-    fn my_test() {}
+    #[kedge_contracts::requires(x > 0)]
+    #[kedge_contracts::ensures(x > 0)]
+    fn my_test(x: int) -> int {
+        x + 1
+    }
 }

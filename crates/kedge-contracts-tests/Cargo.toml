@@ -5,4 +5,4 @@ version.workspace = true
 license.workspace = true
 
 [dependencies]
-kedge-contracts = { version = "0.1.0", path = "../kedge-contracts" }
+kedge-contracts = { version = "0.1.0", path = "../kedge-contracts", features = ["flux-rs", "kani"] }
