@@ -7,3 +7,6 @@ edition = "2024"
 version.workspace = true
 
 [dependencies]
+
+[target.'cfg(kani_ra)'.dependencies]
+kani = { git = "https://github.com/model-checking/kani", optional = true }
