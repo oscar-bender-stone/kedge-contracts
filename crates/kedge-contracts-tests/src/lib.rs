@@ -3,12 +3,12 @@
 
 use kedge_contracts;
 
-#[cfg(test)]
+#[cfg(kani)]
 mod tests {
 
     #[kedge_contracts::contract]
-    #[kedge_contracts::requires(x > 0)]
-    #[kedge_contracts::ensures(x > 0)]
+    #[kedge_contracts::requires(x < 100)]
+    #[kedge_contracts::ensures(*result > x)]
     fn my_test(x: i8) -> i8 {
         x + 1
     }

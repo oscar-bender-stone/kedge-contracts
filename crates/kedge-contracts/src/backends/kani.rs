@@ -3,22 +3,24 @@
 
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{ItemFn, parse_macro_input};
+use syn::{Expr, FnArg, ItemFn, parse_macro_input};
 
 pub fn contract(_args: TokenStream, input_fn: TokenStream) -> TokenStream {
     let mut input_fn = parse_macro_input!(input_fn as ItemFn);
-    let mut requires = Vec::new();
-    let mut ensures = Vec::new();
+    let mut requires_exprs = Vec::new();
+    let mut ensures_exprs = Vec::new();
 
+    // Filter attributes
     input_fn.attrs.retain(|attr| {
-        let path = attr.path();
-        ensures.push(attr.clone());
-
-        if path.is_ident("requires") {
-            requires.push(attr.clone());
+        if attr.path().is_ident("requires") {
+            if let Ok(expr) = attr.parse_args::<Expr>() {
+                requires_exprs.push(expr);
+            }
             false
-        } else if path.is_ident("ensures") {
-            ensures.push(attr.clone());
+        } else if attr.path().is_ident("ensures") {
+            if let Ok(expr) = attr.parse_args::<Expr>() {
+                ensures_exprs.push(expr);
+            }
             false
         } else {
             true
@@ -26,24 +28,63 @@ pub fn contract(_args: TokenStream, input_fn: TokenStream) -> TokenStream {
     });
 
     let fn_name = &input_fn.sig.ident;
+    let fn_vis = &input_fn.vis;
+    let fn_sig = &input_fn.sig;
+    let fn_block = &input_fn.block;
+    let attrs = &input_fn.attrs;
 
+    // Generate Kani attributes.
+    // To pass on conditions to Kani more easily,
+    // wrap the expression around a closure |result| { ... }
+    let kani_requires = requires_exprs.iter().map(|expr| {
+        quote! { #[cfg_attr(kani, kani::requires(#expr))] }
+    });
+
+    let kani_ensures = ensures_exprs.iter().map(|expr| {
+        quote! { #[cfg_attr(kani, kani::ensures(|result| { #expr }))] }
+    });
+
+    // Setup arguments for harness
+    let mut arg_decls = Vec::new();
+    let mut arg_names = Vec::new();
+
+    for arg in &input_fn.sig.inputs {
+        if let FnArg::Typed(pat_type) = arg {
+            let pat = &pat_type.pat;
+            let ty = &pat_type.ty;
+            arg_decls.push(quote! {
+                let #pat: #ty = kani::any();
+            });
+            arg_names.push(pat);
+        }
+    }
+
+    // 4. Harness Generation
+    let harness_name = quote::format_ident!("__harness_{}", fn_name);
+
+    // Call the function,
+    // and make `result` a refernece
+    // to work with kani::ensures
     let harness = quote! {
-        const _: () = {
-            #[kani::proof]
-            fn __harness() {
-                #(kani::assume(#requires);)*
+        #[cfg(kani)]
+        #[kani::proof]
+        #[allow(dead_code)]
+        fn #harness_name() {
+            #(#arg_decls)*
 
-                let result = #fn_name();
+            #(kani::assume(#requires_exprs);)*
 
-                #(kani::ensure(#ensures, "Contraint failed.");)*
-            }
-        };
+            let temp_result = #fn_name(#(#arg_names),*);
+
+            let result = &temp_result;
+        }
     };
 
     quote! {
-        #(#[cfg_attr(kani, kani::requires(#requires))])*
-        #(#[cfg_attr(kani, kani::ensures(#requires))])*
-        #input_fn
+        #(#attrs)*
+        #(#kani_requires)*
+        #(#kani_ensures)*
+        #fn_vis #fn_sig #fn_block
         #harness
     }
     .into()
