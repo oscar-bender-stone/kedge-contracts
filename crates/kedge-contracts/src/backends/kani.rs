@@ -105,13 +105,3 @@ pub fn contract(_args: TokenStream, input_fn: TokenStream) -> TokenStream {
     }
     .into()
 }
-
-// Ignore args in requires and ensures;
-// handled in contract
-pub fn requires(_args: TokenStream, input_fn: TokenStream) -> TokenStream {
-    input_fn
-}
-
-pub fn ensures(_args: TokenStream, input_fn: TokenStream) -> TokenStream {
-    input_fn
-}
