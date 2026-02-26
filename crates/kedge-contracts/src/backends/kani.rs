@@ -25,10 +25,26 @@ pub fn contract(_args: TokenStream, input_fn: TokenStream) -> TokenStream {
         }
     });
 
+    let fn_name = &input_fn.sig.ident;
+
+    let harness = quote! {
+        const _: () = {
+            #[kani::proof]
+            fn __harness() {
+                #(kani::assume(#requires);)*
+
+                let result = #fn_name();
+
+                #(kani::ensure(#ensures, "Contraint failed.");)*
+            }
+        };
+    };
+
     quote! {
         #(#[cfg_attr(kani, kani::requires(#requires))])*
         #(#[cfg_attr(kani, kani::ensures(#requires))])*
         #input_fn
+        #harness
     }
     .into()
 }
