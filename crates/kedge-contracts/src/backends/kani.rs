@@ -12,12 +12,26 @@ pub fn contract(_args: TokenStream, input_fn: TokenStream) -> TokenStream {
 
     // Filter attributes
     input_fn.attrs.retain(|attr| {
-        if attr.path().is_ident("requires") {
+        if attr.path().is_ident("requires")
+            || attr
+                .path()
+                .segments
+                .last()
+                .map(|s| s.ident == "requires")
+                .unwrap_or(false)
+        {
             if let Ok(expr) = attr.parse_args::<Expr>() {
                 requires_exprs.push(expr);
             }
             false
-        } else if attr.path().is_ident("ensures") {
+        } else if attr.path().is_ident("ensures")
+            || attr
+                .path()
+                .segments
+                .last()
+                .map(|s| s.ident == "ensures")
+                .unwrap_or(false)
+        {
             if let Ok(expr) = attr.parse_args::<Expr>() {
                 ensures_exprs.push(expr);
             }
