@@ -5,7 +5,7 @@
 members = [
   "crates/kedge-contracts",
   "crates/kedge-cli",
-  "crates/kedge-harness",
+  "crates/kedge-verify",
   "crates/kedge-test",
   "crates/kedge-synth",
   "crates/kedge-spec",

@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 [package]
-name = "kedge-harness"
+name = "kedge-verify"
 edition = "2024"
 version.workspace = true
 

@@ -11,10 +11,6 @@ name = "kedge-contracts"
 version = "0.1.0"
 
 [[package]]
-name = "kedge-harness"
-version = "0.1.0"
-
-[[package]]
 name = "kedge-spec"
 version = "0.1.0"
 
@@ -24,4 +20,8 @@ version = "0.1.0"
 
 [[package]]
 name = "kedge-test"
+version = "0.1.0"
+
+[[package]]
+name = "kedge-verify"
 version = "0.1.0"
