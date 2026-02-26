@@ -80,6 +80,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "kedge-contracts-tests"
+version = "0.1.0"
+dependencies = [
+ "kedge-contracts",
+]
+
+[[package]]
 name = "kedge-spec"
 version = "0.1.0"
 

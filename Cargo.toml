@@ -8,7 +8,7 @@ members = [
   "crates/kedge-verify",
   "crates/kedge-test",
   "crates/kedge-synth",
-  "crates/kedge-spec",
+  "crates/kedge-spec", "crates/kedge-contracts-tests",
 ]
 resolver = "3"
 
