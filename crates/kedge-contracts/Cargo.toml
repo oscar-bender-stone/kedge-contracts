@@ -1,0 +1,9 @@
+# SPDX-FileCopyrightText: 2026 Oscar Bender-Stone <oscar-bender-stone@protonmail.com>
+# SPDX-License-Identifier: MIT
+
+[package]
+name = "kedge-contracts"
+edition = "2024"
+version.workspace = true
+
+[dependencies]
