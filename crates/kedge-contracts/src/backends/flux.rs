@@ -26,68 +26,46 @@ fn is_kedge_attr(attr: &Attribute, attr_name: &str) -> bool {
 
 // TODO: add support for structs and enums
 // TODO: support more complex conditions
-pub fn generate_flux_attr(
+pub fn generate_flux_spec(
     input_fn: &ItemFn,
     requires: &[Expr],
     ensures: &[Expr],
 ) -> proc_macro2::TokenStream {
-    // flux_rs::spec expects a string as argument,
-    // so we must construct it manually
-    let mut sig_string = String::from("fn(");
-
-    for (i, input) in input_fn.sig.inputs.iter().enumerate() {
-        if i > 0 {
-            sig_string.push_str(", ");
-        }
-
-        match input {
-            FnArg::Typed(pat_type) => {
-                // Extract argument name
-                let pat_str = match &*pat_type.pat {
-                    Pat::Ident(p) => p.ident.to_string(),
-                    _ => "_".to_string(), // For now, create a placeholder for patterns
-                };
-
-                let ty_str = quote::quote!(#pat_type.ty).to_string().replace(" ", " ");
-
-                sig_string.push_str(&format!("{}: {}", pat_str, ty_str));
-            }
-            FnArg::Receiver(_) => {
-                // Handle 'self'
-                sig_string.push_str("self");
+    let args = input_fn.sig.inputs.iter().map(|arg| match arg {
+        FnArg::Typed(pat_type) => {
+            let ty = &pat_type.ty;
+            match &*pat_type.pat {
+                syn::Pat::Ident(p) => {
+                    let ident = &p.ident;
+                    quote! { #ident: #ty }
+                }
+                _ => quote! { _: #ty },
             }
         }
-    }
+        FnArg::Receiver(r) => quote! { #r },
+    });
 
-    sig_string.push_str(") -> ");
+    let return_type = match &input_fn.sig.output {
+        ReturnType::Default => quote! { -> () },
+        ReturnType::Type(_, ty) => quote! { -> #ty },
+    };
 
-    // Handle return type
-    match &input_fn.sig.output {
-        ReturnType::Default => sig_string.push_str("()"),
-        ReturnType::Type(_, ty) => {
-            let ret_str = quote::quote!(#ty).to_string().replace(" ", "");
-            sig_string.push_str(&ret_str);
-        }
-    }
+    let requires_tokens = if requires.is_empty() {
+        quote! {}
+    } else {
+        quote! { requires #(#requires)&&* }
+    };
 
-    // To make the translation easier,
-    // use 'requires` clauses
-    for req in requires {
-        let req_str = quote::quote!(#req).to_string();
-        sig_string.push_str(&format!(" requires {}", req_str));
-    }
-
-    // Now append `ensures` clauses.
-    // Note that we must bind to the return value, e.g.,
-    // " ensures result: result > x"
-    for ens in ensures {
-        let ens_str = quote::quote!(#ens).to_string();
-        // TODO: enforce result being used in expression
-        sig_string.push_str(&format!(" ensures result: {}", ens_str));
-    }
+    let ensures_tokens = if ensures.is_empty() {
+        quote! {}
+    } else {
+        quote! { ensures result: #(#ensures)&&* }
+    };
 
     quote! {
-        #[cfg_attr(flux, flux::spec(fn(#sig_string)))]
+        #[cfg_attr(flux, flux_rs::spec(
+            fn(#(#args),*) #return_type #requires_tokens #ensures_tokens
+        ))]
     }
 }
 
@@ -114,7 +92,7 @@ pub fn contract(_args: TokenStream, input_fn: TokenStream) -> TokenStream {
     });
 
     let attrs = &input_fn.attrs;
-    let flux_spec = generate_flux_attr(&input_fn, &requires_exprs, &ensures_exprs);
+    let flux_spec = generate_flux_spec(&input_fn, &requires_exprs, &ensures_exprs);
 
     quote! {
         #(#attrs)*
