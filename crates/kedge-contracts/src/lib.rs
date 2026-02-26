@@ -6,9 +6,10 @@ mod backends;
 use proc_macro::TokenStream;
 use quote::quote;
 
+// TODO: specify backend
 #[proc_macro_attribute]
 pub fn contract(_args: TokenStream, input_fn: TokenStream) -> TokenStream {
-    backends::kani::contract(_args, input_fn)
+    backends::flux::contract(_args, input_fn)
 }
 
 /// A marker that *cannot* be used alone.
