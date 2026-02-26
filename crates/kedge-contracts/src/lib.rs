@@ -36,7 +36,7 @@ pub fn requires(_conditions: TokenStream, _input_fn: TokenStream) -> TokenStream
 pub fn ensures(_conditions: TokenStream, _input_fn: TokenStream) -> TokenStream {
     quote! {
         compile_error!(
-            "The `#[requires]` attribute cannot be used alone. \n\
+            "The `#[ensures]` attribute cannot be used alone. \n\
              You must add `#[kedge_contracts::contract]` to the function.\n\
              Example:\n   \
                  #[kedge_contracts::contract]\n   \
