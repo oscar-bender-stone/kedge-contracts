@@ -66,11 +66,11 @@ dependencies = [
 
 [[package]]
 name = "kedge-cli"
-version = "0.1.0"
+version = "0.2.0"
 
 [[package]]
 name = "kedge-contracts"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "flux-rs",
  "kani",
@@ -81,26 +81,26 @@ dependencies = [
 
 [[package]]
 name = "kedge-contracts-tests"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "kedge-contracts",
 ]
 
 [[package]]
 name = "kedge-spec"
-version = "0.1.0"
+version = "0.2.0"
 
 [[package]]
 name = "kedge-synth"
-version = "0.1.0"
+version = "0.2.0"
 
 [[package]]
 name = "kedge-test"
-version = "0.1.0"
+version = "0.2.0"
 
 [[package]]
 name = "kedge-verify"
-version = "0.1.0"
+version = "0.2.0"
 
 [[package]]
 name = "proc-macro-error-attr2"
