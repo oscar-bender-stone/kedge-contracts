@@ -7,6 +7,7 @@ edition = "2024"
 version.workspace = true
 
 [dependencies]
+flux-rs = { git = "https://github.com/flux-rs/flux.git", optional = true }
 
 [target.'cfg(kani_ra)'.dependencies]
 kani = { git = "https://github.com/model-checking/kani", optional = true }
