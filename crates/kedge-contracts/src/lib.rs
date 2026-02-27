@@ -6,13 +6,25 @@ mod validate;
 
 use crate::validate::is_kedge_attr;
 use backends::verify::{flux::FluxBackend, kani::KaniBackend};
-use kedge_contracts_core::traits::Backend;
+use kedge_contracts_core::traits::{Backend, BackendOutput};
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{Expr, ItemFn, parse_macro_input};
+use syn::parse_quote;
+use syn::punctuated::Punctuated;
+use syn::{Attribute, Expr, ItemFn, Token, Type, parse_macro_input};
+
+macro_rules! collect_backends {
+    ([ $($backend:path),* $(,)? ]) => {
+        |target: &mut Vec<BackendOutput>, input: &ItemFn, req: &[Expr], ens: &[Expr]| {
+            $(
+                target.push(<$backend as Backend>::generate(input, req, ens));
+            )*
+        }
+    };
+}
 
 #[proc_macro_attribute]
-pub fn contract(_args: TokenStream, input_fn: TokenStream) -> TokenStream {
+pub fn contract(args: TokenStream, input_fn: TokenStream) -> TokenStream {
     let mut input_fn = parse_macro_input!(input_fn as ItemFn);
     let mut requires_exprs = Vec::new();
     let mut ensures_exprs = Vec::new();
@@ -34,20 +46,30 @@ pub fn contract(_args: TokenStream, input_fn: TokenStream) -> TokenStream {
         }
     });
 
-    let kani_output = KaniBackend::generate(&input_fn, &requires_exprs, &ensures_exprs);
-    let flux_output = FluxBackend::generate(&input_fn, &requires_exprs, &ensures_exprs);
+    let mut backend_outputs = Vec::new();
+
+    let run_backends = if args.is_empty() {
+        collect_backends!([KaniBackend, FluxBackend])
+    } else {
+        collect_backends!([KaniBackend, FluxBackend])
+    };
+
+    run_backends(
+        &mut backend_outputs,
+        &input_fn,
+        &requires_exprs,
+        &ensures_exprs,
+    );
 
     let mut contract_attrs = Vec::new();
+    let mut harnesses = Vec::new();
 
-    if let Some(attrs) = kani_output.attrs {
-        contract_attrs.extend(attrs)
+    for output in backend_outputs {
+        if let Some(attrs) = output.attrs {
+            contract_attrs.extend(attrs)
+        }
+        harnesses.push(output.harness);
     }
-
-    if let Some(attrs) = flux_output.attrs {
-        contract_attrs.extend(attrs)
-    }
-
-    let harnesses = vec![kani_output.harness];
 
     quote! {
         #(#contract_attrs)*
