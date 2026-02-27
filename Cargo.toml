@@ -8,10 +8,16 @@ members = [
   "crates/kedge-contracts",
   "crates/kedge-cli",
   "crates/kedge-synth",
-  "crates/kedge-spec", "crates/kedge-contracts-tests",
+  "crates/kedge-spec",
+  "crates/kedge-contracts-tests",
 ]
 resolver = "3"
 
 [workspace.package]
 version = "0.3.0"
 license = "MIT"
+
+[workspace.dependencies]
+proc-macro2 = { version = "1.0.106", features = ["span-locations"] }
+quote = "1.0.44"
+syn = { version = "2.0.117", features = ["full"] }
