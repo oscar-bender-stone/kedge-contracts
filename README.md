@@ -16,11 +16,9 @@ your own, kedge doesn't provide a testing framework itself. For that, there are
 
 ## Quick Start
 
-### Testing Existing Code
+Here are the features you can enable:
 
-To test your existing code, you'll want to add the `contracts` feature, enabled
-by default. From there, you can choose to use:
-
+- `all`: enable `test` and `verify`.
 - `test`: automatically generate cases based on your contracts!
   - `proptest`: use the
     [proptest backend](https://github.com/proptest-rs/proptest) via
