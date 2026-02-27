@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 #[cfg(kani)]
-pub use kani::{ensures, requires};
+pub use kani;
 
 use kedge_contracts_core::traits::{Backend, BackendOutput};
 use quote::quote;
@@ -36,7 +36,7 @@ impl Backend for KaniBackend {
         let kani_requires: Vec<proc_macro2::TokenStream> = requires_exprs
             .iter()
             .map(|expr| {
-                quote! { #[cfg_attr(kani, kani::requires(#expr))] }
+                quote! { #[cfg_attr(kani, ::kani::requires(#expr))] }
             })
             .collect();
 
@@ -47,7 +47,7 @@ impl Backend for KaniBackend {
         let kani_ensures: Vec<proc_macro2::TokenStream> = ensures_exprs
             .iter()
             .map(|expr| {
-                quote! { #[cfg_attr(kani, kani::ensures(|result| { #expr }))] }
+                quote! { #[cfg_attr(kani, ::kani::ensures(|result| { #expr }))] }
             })
             .collect();
 
