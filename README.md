@@ -22,20 +22,22 @@ To test your existing code, you'll want to add the `contracts` feature, enabled
 by default. From there, you can choose to use:
 
 - `test`: automatically generate cases based on your contracts!
+  - `proptest`: use the
+    [proptest backend](https://github.com/proptest-rs/proptest) via
+    `cargo test`.
 
 - `verify`: verify your contracts using tools from formal methods. For more
   information, please see:
   [Rust Formal Methods Group](https://rust-formal-methods.github.io/).
+  - `kani`: model checker for Rust. Useful for checking **bounded** low-level
+    bit operations or unsafe blocks. Make sure to
+    [install kani](https://model-checking.github.io/kani/install-guide.html)).
+    Then, run: `cargo kani`.
 
-You can currently run:
-
-- `assert` or `proptest`: `cargo test`
-
-- `kani`: `cargo kani` (make sure to
-  [install kani](https://model-checking.github.io/kani/install-guide.html))
-
-- `flux`: `cargo flux`(make sure to
-  [install flux](https://flux-rs.github.io/flux/guide/install.html))
+  - `flux`: refinement types in Rust. Useful to define specific types, e.g.,
+    `i32[10]` to have _exactly_ the `i32` with value `10`. Make sure to
+    [install flux](https://flux-rs.github.io/flux/guide/install.html)). Then,
+    run `cargo flux`.
 
 ## License
 

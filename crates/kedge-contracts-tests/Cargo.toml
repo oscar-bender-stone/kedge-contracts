@@ -8,7 +8,7 @@ version.workspace = true
 license.workspace = true
 
 [dependencies]
-kedge-contracts = { path = "../kedge-contracts", features = ["proptest"] }
+kedge-contracts = { path = "../kedge-contracts", features = ["all"] }
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(kani)'] }
