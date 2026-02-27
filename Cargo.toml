@@ -6,9 +6,6 @@ members = [
   "crates/kedge-contracts-core",
   "crates/kedge-contracts-macros",
   "crates/kedge-contracts",
-  "crates/kedge-cli",
-  "crates/kedge-synth",
-  "crates/kedge-spec",
   "crates/kedge-contracts-tests",
 ]
 resolver = "3"
