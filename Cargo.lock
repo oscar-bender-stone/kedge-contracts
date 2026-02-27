@@ -202,10 +202,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "kedge-cli"
-version = "0.4.0"
-
-[[package]]
 name = "kedge-contracts"
 version = "0.4.0"
 dependencies = [
@@ -240,14 +236,6 @@ version = "0.4.0"
 dependencies = [
  "kedge-contracts",
 ]
-
-[[package]]
-name = "kedge-spec"
-version = "0.4.0"
-
-[[package]]
-name = "kedge-synth"
-version = "0.4.0"
 
 [[package]]
 name = "leb128fmt"

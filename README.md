@@ -37,12 +37,6 @@ You can currently run:
 - `flux`: `cargo flux`(make sure to
   [install flux](https://flux-rs.github.io/flux/guide/install.html))
 
-[TBD] To try all tests, run:
-
-```shell
-cargo kedge
-```
-
 ## License
 
 2026 (c) Oscar Bender-Stone <oscar-bender-stone@protonmail.com>
