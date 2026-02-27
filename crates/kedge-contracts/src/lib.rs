@@ -4,6 +4,7 @@
 mod backends;
 mod validate;
 
+use crate::backends::test::proptest::ProptestBackend;
 use crate::validate::is_kedge_attr;
 use backends::verify::{flux::FluxBackend, kani::KaniBackend};
 use kedge_contracts_core::traits::{Backend, BackendOutput};
@@ -49,9 +50,9 @@ pub fn contract(args: TokenStream, input_fn: TokenStream) -> TokenStream {
     let mut backend_outputs = Vec::new();
 
     let run_backends = if args.is_empty() {
-        collect_backends!([KaniBackend, FluxBackend])
+        collect_backends!([KaniBackend, FluxBackend, ProptestBackend])
     } else {
-        collect_backends!([KaniBackend, FluxBackend])
+        collect_backends!([KaniBackend, FluxBackend, ProptestBackend])
     };
 
     run_backends(

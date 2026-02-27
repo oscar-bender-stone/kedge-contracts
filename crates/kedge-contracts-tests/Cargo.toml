@@ -11,6 +11,7 @@ license.workspace = true
 kedge-contracts = { path = "../kedge-contracts", features = [
   "flux-rs",
   "kani",
+  "proptest",
 ] }
 
 [lints.rust]
