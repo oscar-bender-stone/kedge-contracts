@@ -240,6 +240,7 @@ name = "kedge-contracts-tests"
 version = "0.3.0"
 dependencies = [
  "kedge-contracts",
+ "proptest",
 ]
 
 [[package]]

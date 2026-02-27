@@ -13,6 +13,7 @@ kedge-contracts = { path = "../kedge-contracts", features = [
   "kani",
   "proptest",
 ] }
+proptest = "1.10.0"
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(kani)'] }

@@ -1,9 +1,6 @@
 // SPDX-FileCopyrightText: 2026 Oscar Bender-Stone <oscar-bender-stone@protonmail.com>
 // SPDX-License-Identifier: MIT
 
-#[cfg(proptest)]
-pub use proptest;
-
 use kedge_contracts_core::traits::{Backend, BackendOutput};
 use quote::quote;
 
@@ -51,7 +48,7 @@ impl Backend for ProptestBackend {
         let proptest_assumes = if requires_exprs.is_empty() {
             quote! {}
         } else {
-            quote! { #(::proptest::prop_assumes!(#requires_exprs);)* }
+            quote! { #(::proptest::prop_assume!(#requires_exprs);)* }
         };
 
         let proptest_asserts = if ensures_exprs.is_empty() {
@@ -61,12 +58,13 @@ impl Backend for ProptestBackend {
         };
 
         let proptest_harness = quote! {
-            #[cfg(proptest)]
-            #[property_test]
-            #harness_sig {
-                #proptest_assumes
-                let result = #fn_name(#(#call_args),*);
-                #proptest_asserts
+            ::proptest::proptest! {
+                #[test]
+                #harness_sig {
+                    #proptest_assumes
+                    let result = &(#fn_name(#(#call_args),*));
+                    #proptest_asserts
+                }
             }
         };
 
