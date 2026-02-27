@@ -29,13 +29,13 @@ Here are the features you can enable:
   [Rust Formal Methods Group](https://rust-formal-methods.github.io/).
   - `kani`: model checker for Rust. Useful for checking **bounded** low-level
     bit operations or unsafe blocks. Make sure to
-    [install kani](https://model-checking.github.io/kani/install-guide.html)).
+    [install kani](https://model-checking.github.io/kani/install-guide.html).
     Then, run: `cargo kani`.
 
   - `flux`: refinement types in Rust. Useful to define specific types, e.g.,
     `i32[10]` to have _exactly_ the `i32` with value `10`. Make sure to
-    [install flux](https://flux-rs.github.io/flux/guide/install.html)). Then,
-    run `cargo flux`.
+    [install flux](https://flux-rs.github.io/flux/guide/install.html). Then, run
+    `cargo flux`.
 
 ## License
 
