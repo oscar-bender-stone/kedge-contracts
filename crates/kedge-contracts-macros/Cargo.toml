@@ -15,7 +15,7 @@ quote = { workspace = true }
 syn = { workspace = true }
 kedge-contracts-core = { path = "../kedge-contracts-core" }
 flux-rs = { git = "https://github.com/flux-rs/flux.git", optional = true }
-proptest = { version = "1.10.0", optional = true, features = ["attr-macro"] }
+proptest = { version = "1.10.0", optional = true }
 
 [target.'cfg(kani_ra)'.dependencies]
 kani = { git = "https://github.com/model-checking/kani", optional = true }
