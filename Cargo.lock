@@ -218,13 +218,8 @@ version = "0.3.0"
 name = "kedge-contracts"
 version = "0.3.0"
 dependencies = [
- "flux-rs",
- "kani",
- "kedge-contracts-core",
- "proc-macro2",
+ "kedge-contracts-macros",
  "proptest",
- "quote",
- "syn",
 ]
 
 [[package]]
@@ -236,11 +231,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "kedge-contracts-macros"
+version = "0.3.0"
+dependencies = [
+ "flux-rs",
+ "kani",
+ "kedge-contracts-core",
+ "proc-macro2",
+ "proptest",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "kedge-contracts-tests"
 version = "0.3.0"
 dependencies = [
  "kedge-contracts",
- "proptest",
 ]
 
 [[package]]

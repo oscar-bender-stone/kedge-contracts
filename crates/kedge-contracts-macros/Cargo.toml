@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: 2026 Oscar Bender-Stone <oscar-bender-stone@protonmail.com>
+# SPDX-License-Identifier: MIT
+
+[package]
+name = "kedge-contracts-macros"
+edition = "2024"
+version.workspace = true
+
+[lib]
+proc-macro = true
+
+[dependencies]
+flux-rs = { git = "https://github.com/flux-rs/flux.git", optional = true }
+proc-macro2 = { version = "1.0.106", features = ["span-locations"] }
+quote = "1.0.44"
+syn = { version = "2.0.117", features = ["full"] }
+kedge-contracts-core = { path = "../kedge-contracts-core" }
+proptest = { version = "1.10.0", optional = true, features = ["attr-macro"] }
+
+[target.'cfg(kani_ra)'.dependencies]
+kani = { git = "https://github.com/model-checking/kani", optional = true }

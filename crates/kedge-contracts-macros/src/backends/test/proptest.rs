@@ -48,17 +48,17 @@ impl Backend for ProptestBackend {
         let proptest_assumes = if requires_exprs.is_empty() {
             quote! {}
         } else {
-            quote! { #(::proptest::prop_assume!(#requires_exprs);)* }
+            quote! { #(::kedge_contracts::proptest::prop_assume!(#requires_exprs);)* }
         };
 
         let proptest_asserts = if ensures_exprs.is_empty() {
             quote! {}
         } else {
-            quote! { #(::proptest::prop_assert!(#ensures_exprs);)* }
+            quote! { #(::kedge_contracts::proptest::prop_assert!(#ensures_exprs);)* }
         };
 
         let proptest_harness = quote! {
-            ::proptest::proptest! {
+            ::kedge_contracts::proptest::proptest! {
                 #[test]
                 #harness_sig {
                     #proptest_assumes
@@ -67,8 +67,6 @@ impl Backend for ProptestBackend {
                 }
             }
         };
-
-        println!("{proptest_harness}");
 
         BackendOutput::new(None, Some(proptest_harness))
     }

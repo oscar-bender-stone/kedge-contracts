@@ -3,6 +3,8 @@
 
 #[cfg(test)]
 mod tests {
+    use kedge_contracts;
+
     #[kedge_contracts::contract]
     #[kedge_contracts::requires(x < 100)]
     #[kedge_contracts::ensures(*result > x)]
