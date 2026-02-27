@@ -10,9 +10,7 @@ use backends::verify::{flux::FluxBackend, kani::KaniBackend};
 use kedge_contracts_core::traits::{Backend, BackendOutput};
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::parse_quote;
-use syn::punctuated::Punctuated;
-use syn::{Attribute, Expr, ItemFn, Token, Type, parse_macro_input};
+use syn::{Expr, ItemFn, parse_macro_input};
 
 macro_rules! collect_backends {
     ([ $($backend:path),* $(,)? ]) => {
@@ -24,6 +22,12 @@ macro_rules! collect_backends {
     };
 }
 
+// WARNING: the prefix `__harness` is reserved.
+// Because some backends uses `#[test]`,
+// there isn't a great way to guarantee
+// isolation. Please keep this in mind
+// and *avoid* using the prefix `_harness`
+// in your function names.
 #[proc_macro_attribute]
 pub fn contract(args: TokenStream, input_fn: TokenStream) -> TokenStream {
     let mut input_fn = parse_macro_input!(input_fn as ItemFn);
