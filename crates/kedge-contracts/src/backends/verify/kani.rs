@@ -1,6 +1,9 @@
 // SPDX-FileCopyrightText: 2026 Oscar Bender-Stone <oscar-bender-stone@protonmail.com>
 // SPDX-License-Identifier: MIT
 
+#[cfg(kani)]
+pub use kani::{ensures, requires};
+
 use kedge_contracts_core::traits::{Backend, BackendOutput};
 use quote::quote;
 use syn::{Expr, FnArg, ItemFn};
