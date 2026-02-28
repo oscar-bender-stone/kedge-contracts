@@ -48,13 +48,19 @@ impl Backend for ProptestBackend {
         let proptest_assumes = if requires_exprs.is_empty() {
             quote! {}
         } else {
-            quote! { #(::kedge_contracts::proptest::prop_assume!(#requires_exprs);)* }
+            quote! {
+                #[cfg(test)]
+                #(::kedge_contracts::proptest::prop_assume!(#requires_exprs);)*
+            }
         };
 
         let proptest_asserts = if ensures_exprs.is_empty() {
             quote! {}
         } else {
-            quote! { #(::kedge_contracts::proptest::prop_assert!(#ensures_exprs);)* }
+            quote! {
+                #[cfg(test)]
+                #(::kedge_contracts::proptest::prop_assert!(#ensures_exprs);)*
+            }
         };
 
         let proptest_harness = quote! {
