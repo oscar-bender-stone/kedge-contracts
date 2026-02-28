@@ -5,7 +5,7 @@
 extern crate flux_rs;
 
 use crate::validate::is_kedge_attr;
-use kedge_contracts_core::traits::{Backend, BackendOutput};
+use kedge_contracts_core::traits::{Backend, BackendOutput, Stub};
 use proc_macro::TokenStream;
 use quote::quote;
 use syn::{Attribute, Expr, FnArg, ItemFn, parse_macro_input};
@@ -18,6 +18,7 @@ impl Backend for FluxBackend {
         input_fn: &ItemFn,
         requires_exprs: &[Expr],
         ensures_exprs: &[Expr],
+        _stubs: &[Stub],
         is_trusted: bool,
     ) -> BackendOutput {
         let args = input_fn.sig.inputs.iter().map(|arg| match arg {

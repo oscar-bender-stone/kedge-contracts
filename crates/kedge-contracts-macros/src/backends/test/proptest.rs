@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2026 Oscar Bender-Stone <oscar-bender-stone@protonmail.com>
 // SPDX-License-Identifier: MIT
 
-use kedge_contracts_core::traits::{Backend, BackendOutput};
+use kedge_contracts_core::traits::{Backend, BackendOutput, Stub};
 use quote::quote;
 
 use syn::{FnArg, Pat};
@@ -13,6 +13,7 @@ impl Backend for ProptestBackend {
         input_fn: &syn::ItemFn,
         requires_exprs: &[syn::Expr],
         ensures_exprs: &[syn::Expr],
+        _stubs: &[Stub],
         _is_trusted: bool,
     ) -> kedge_contracts_core::traits::BackendOutput {
         let fn_name = &input_fn.sig.ident;

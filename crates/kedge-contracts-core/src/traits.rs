@@ -1,8 +1,13 @@
 // SPDX-FileCopyrightText: 2026 Oscar Bender-Stone <oscar-bender-stone@protonmail.com>
 // SPDX-License-Identifier: MIT
 
-use syn::{Expr, ItemFn};
+use syn::{Expr, ItemFn, Path};
 
+#[derive(Clone)]
+pub struct Stub {
+    pub original: Path,
+    pub replacement: Path,
+}
 #[allow(unused)]
 pub struct BackendOutput {
     pub attrs: Option<Vec<proc_macro2::TokenStream>>,
@@ -27,6 +32,7 @@ pub trait Backend {
         input_fn: &ItemFn,
         requires_exprs: &[Expr],
         ensures_exprs: &[Expr],
+        stubs: &[Stub],
         is_trusted: bool,
     ) -> BackendOutput;
 }

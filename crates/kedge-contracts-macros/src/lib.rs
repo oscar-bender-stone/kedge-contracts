@@ -7,16 +7,31 @@ mod validate;
 use crate::backends::test::proptest::ProptestBackend;
 use crate::validate::is_kedge_attr;
 use backends::verify::{flux::FluxBackend, kani::KaniBackend};
-use kedge_contracts_core::traits::{Backend, BackendOutput};
+use kedge_contracts_core::traits::{Backend, BackendOutput, Stub};
 use proc_macro::TokenStream;
 use quote::quote;
+use syn::parse::{Parse, ParseStream};
 use syn::{Expr, ItemFn, parse_macro_input};
 
+// A helper parser to safely extract `original, replacement` from the token stream
+struct StubParser(Stub);
+
+impl Parse for StubParser {
+    fn parse(input: ParseStream) -> syn::Result<Self> {
+        let original = input.parse()?;
+        input.parse::<syn::token::Comma>()?;
+        let replacement = input.parse()?;
+        Ok(StubParser(Stub {
+            original,
+            replacement,
+        }))
+    }
+}
 macro_rules! collect_backends {
     ([ $($backend:path),* $(,)? ]) => {
-        |target: &mut Vec<BackendOutput>, input: &ItemFn, req: &[Expr], ens: &[Expr], is_trusted: bool| {
+        |target: &mut Vec<BackendOutput>, input: &ItemFn, req: &[Expr], ens: &[Expr], stubs: &[Stub], is_trusted: bool| {
             $(
-                target.push(<$backend as Backend>::generate(input, req, ens, is_trusted));
+                target.push(<$backend as Backend>::generate(input, req, ens, stubs, is_trusted));
             )*
         }
     };
@@ -33,6 +48,7 @@ pub fn contract(args: TokenStream, input_fn: TokenStream) -> TokenStream {
     let mut input_fn = parse_macro_input!(input_fn as ItemFn);
     let mut requires_exprs = Vec::new();
     let mut ensures_exprs = Vec::new();
+    let mut stubs = Vec::new();
     let mut is_trusted = false;
 
     // Filter attributes
@@ -49,6 +65,12 @@ pub fn contract(args: TokenStream, input_fn: TokenStream) -> TokenStream {
             false
         } else if is_kedge_attr(attr, "trusted") {
             is_trusted = true;
+            false
+        } else if is_kedge_attr(attr, "stub") {
+            // Validate and parse the stub arguments cleanly!
+            if let Ok(parsed_stub) = attr.parse_args::<StubParser>() {
+                stubs.push(parsed_stub.0);
+            }
             false
         } else {
             true
@@ -68,6 +90,7 @@ pub fn contract(args: TokenStream, input_fn: TokenStream) -> TokenStream {
         &input_fn,
         &requires_exprs,
         &ensures_exprs,
+        &stubs,
         is_trusted,
     );
 
@@ -138,6 +161,24 @@ pub fn trusted(_args: TokenStream, _input_fn: TokenStream) -> TokenStream {
                  #[kedge_contracts::contract]\n   \
                  #[kedge_contracts::trusted]\n   \
                  #[kedge_contracts::ensures(x > 0)]\n   \
+                 fn my_func(x: i8) ..."
+        );
+    }
+    .into()
+}
+
+/// A marker that *cannot* be used alone.
+/// If applied without `kedge_contracts::contract`,
+/// this function will error.
+#[proc_macro_attribute]
+pub fn stub(_args: TokenStream, _input_fn: TokenStream) -> TokenStream {
+    quote! {
+        compile_error!(
+            "The `#[stub]` attribute cannot be used alone. \n\
+             You must add `#[kedge_contracts::contract]` to the function.\n\
+             Example:\n   \
+                 #[kedge_contracts::contract]\n   \
+                 #[kedge_contracts::stub(original_fn, replacement_fn)]\n   \
                  fn my_func(x: i8) ..."
         );
     }

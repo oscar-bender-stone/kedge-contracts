@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2026 Oscar Bender-Stone <oscar-bender-stone@protonmail.com>
 // SPDX-License-Identifier: MIT
 
-use kedge_contracts_core::traits::{Backend, BackendOutput};
+use kedge_contracts_core::traits::{Backend, BackendOutput, Stub};
 use quote::quote;
 use syn::{Expr, FnArg, ItemFn};
 
@@ -12,6 +12,7 @@ impl Backend for KaniBackend {
         input_fn: &ItemFn,
         requires_exprs: &[Expr],
         ensures_exprs: &[Expr],
+        stubs: &[Stub],
         is_trusted: bool,
     ) -> BackendOutput {
         let fn_name = &input_fn.sig.ident;
@@ -54,24 +55,37 @@ impl Backend for KaniBackend {
         // Call the function,
         // and make `result` a refernece
         // to work with kani::ensures
+        let kani_harness = if is_trusted {
+            // Don't add proof harness
+            // to trusted functions
+            None
+        } else {
+            let harness_name = quote::format_ident!("__harness_{}", fn_name);
 
-        let harness_name = quote::format_ident!("__harness_{}", fn_name);
+            // Turn our structured `Stub` definitions into kani macro attributes
+            let kani_stubs = stubs.iter().map(|stub| {
+                let orig = &stub.original;
+                let rep = &stub.replacement;
+                quote! { #[kani::stub(#orig, #rep)] }
+            });
 
-        let kani_harness = quote! {
-            #[cfg(kani)]
-            #[kani::proof]
-            #[allow(dead_code)]
-            fn #harness_name() {
-                #(#arg_decls)*
+            Some(quote! {
+                #[cfg(kani)]
+                #[kani::proof]
+                #( #kani_stubs )*
+                #[allow(dead_code)]
+                fn #harness_name() {
+                    #(#arg_decls)*
 
-                #(kani::assume(#requires_exprs);)*
+                    #(kani::assume(#requires_exprs);)*
 
-                let temp_result = #fn_name(#(#arg_names),*);
+                    let temp_result = #fn_name(#(#arg_names),*);
 
-                let result = &temp_result;
-            }
+                    let result = &temp_result;
+                }
+            })
         };
 
-        BackendOutput::new(Some(kani_attrs), Some(kani_harness))
+        BackendOutput::new(Some(kani_attrs), kani_harness)
     }
 }
