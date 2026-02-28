@@ -40,16 +40,25 @@ impl Backend for FluxBackend {
             ReturnType::Type(_, ty) => quote! { -> #ty },
         };
 
-        let requires_tokens = if requires_exprs.is_empty() {
+        let flux_old_path: syn::Path = syn::parse_quote!(flux_rs::old);
+        let requires_tokens = if ensures_exprs.is_empty() {
             quote! {}
         } else {
-            quote! { requires #(#requires_exprs)&&* }
+            let replaced_exprs: Vec<_> = requires_exprs
+                .iter()
+                .map(|expr| Self::replace_old_exprs(quote! { #expr }, &flux_old_path))
+                .collect();
+            quote! { requires #(#replaced_exprs)&&* }
         };
 
         let ensures_tokens = if ensures_exprs.is_empty() {
             quote! {}
         } else {
-            quote! { ensures result: #(#ensures_exprs)&&* }
+            let replaced_exprs: Vec<_> = ensures_exprs
+                .iter()
+                .map(|expr| Self::replace_old_exprs(quote! { #expr }, &flux_old_path))
+                .collect();
+            quote! { requires #(#replaced_exprs)&&* }
         };
 
         let spec_attr = quote! {
