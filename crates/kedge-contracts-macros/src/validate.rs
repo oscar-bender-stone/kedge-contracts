@@ -3,20 +3,20 @@
 
 use syn::Attribute;
 
-/// Checks whether a given attribute
-/// comes from kedge-contracts.
-/// To avoid collisions with other crates,
-/// require that the *full path* be used
+/// Checks whether a given attribute matches a specific name
+/// under authorized prefixes (kedge_contracts or kc).
 pub fn is_kedge_attr(attr: &Attribute, attr_name: &str) -> bool {
     let path = attr.path();
 
-    // Confirm there are exactly two segments,
-    // and that the first matche `kedge_contracts`
+    // We only care about paths with exactly two segments: prefix::name
     if path.segments.len() == 2 {
-        let first_segment = &path.segments[0];
-        let last_segment = &path.segments[1];
+        let prefix = &path.segments[0].ident.to_string();
+        let name = &path.segments[1].ident.to_string();
 
-        return first_segment.ident == "kedge_contracts" && last_segment.ident == attr_name;
+        let is_valid_prefix = prefix == "kedge_contracts" || prefix == "kc";
+        let is_valid_name = name == attr_name;
+
+        return is_valid_prefix && is_valid_name;
     }
 
     false
