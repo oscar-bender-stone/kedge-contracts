@@ -203,7 +203,7 @@ dependencies = [
 
 [[package]]
 name = "kedge-contracts"
-version = "0.7.0"
+version = "0.8.0"
 dependencies = [
  "flux-rs",
  "kedge-contracts-macros",
@@ -212,15 +212,16 @@ dependencies = [
 
 [[package]]
 name = "kedge-contracts-core"
-version = "0.7.0"
+version = "0.8.0"
 dependencies = [
  "proc-macro2",
+ "quote",
  "syn",
 ]
 
 [[package]]
 name = "kedge-contracts-macros"
-version = "0.7.0"
+version = "0.8.0"
 dependencies = [
  "flux-rs",
  "kani",
@@ -233,7 +234,7 @@ dependencies = [
 
 [[package]]
 name = "kedge-contracts-tests"
-version = "0.7.0"
+version = "0.8.0"
 dependencies = [
  "kedge-contracts",
 ]

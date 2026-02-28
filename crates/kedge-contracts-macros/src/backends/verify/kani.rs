@@ -32,10 +32,14 @@ impl Backend for KaniBackend {
 
         let mut kani_attrs = Vec::new();
 
+        let kani_old_path: syn::Path = syn::parse_quote!(::kani::old);
+
         let kani_requires: Vec<proc_macro2::TokenStream> = requires_exprs
             .iter()
             .map(|expr| {
-                quote! { #[cfg_attr(kani, ::kani::requires(#expr))] }
+                let expr_tokens = quote! { #expr };
+                let replaced_exprs = Self::replace_old_exprs(expr_tokens, &kani_old_path);
+                quote! { #[cfg_attr(kani, ::kani::requires(#replaced_exprs))] }
             })
             .collect();
 
@@ -46,7 +50,9 @@ impl Backend for KaniBackend {
         let kani_ensures: Vec<proc_macro2::TokenStream> = ensures_exprs
             .iter()
             .map(|expr| {
-                quote! { #[cfg_attr(kani, ::kani::ensures(|result| { #expr }))] }
+                let expr_tokens = quote! { #expr };
+                let replaced_exprs = Self::replace_old_exprs(expr_tokens, &kani_old_path);
+                quote! { #[cfg_attr(kani, ::kani::ensures(|result| { #replaced_exprs }))] }
             })
             .collect();
 
