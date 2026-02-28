@@ -11,4 +11,4 @@ license.workspace = true
 kedge-contracts = { path = "../kedge-contracts", features = ["all"] }
 
 [lints.rust]
-unexpected_cfgs = { level = "warn", check-cfg = ['cfg(kani)'] }
+unexpected_cfgs = { level = "warn", check-cfg = ["cfg(kani)", "cfg(flux)"] }
