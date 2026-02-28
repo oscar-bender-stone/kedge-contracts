@@ -1,9 +1,6 @@
 // SPDX-FileCopyrightText: 2026 Oscar Bender-Stone <oscar-bender-stone@protonmail.com>
 // SPDX-License-Identifier: MIT
 
-#[cfg(kani)]
-pub use kani;
-
 use kedge_contracts_core::traits::{Backend, BackendOutput};
 use quote::quote;
 use syn::{Expr, FnArg, ItemFn};
@@ -15,6 +12,7 @@ impl Backend for KaniBackend {
         input_fn: &ItemFn,
         requires_exprs: &[Expr],
         ensures_exprs: &[Expr],
+        is_trusted: bool,
     ) -> BackendOutput {
         let fn_name = &input_fn.sig.ident;
         let mut arg_decls = Vec::new();

@@ -13,6 +13,7 @@ impl Backend for ProptestBackend {
         input_fn: &syn::ItemFn,
         requires_exprs: &[syn::Expr],
         ensures_exprs: &[syn::Expr],
+        _is_trusted: bool,
     ) -> kedge_contracts_core::traits::BackendOutput {
         let fn_name = &input_fn.sig.ident;
 

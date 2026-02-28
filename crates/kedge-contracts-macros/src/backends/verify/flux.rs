@@ -18,6 +18,7 @@ impl Backend for FluxBackend {
         input_fn: &ItemFn,
         requires_exprs: &[Expr],
         ensures_exprs: &[Expr],
+        is_trusted: bool,
     ) -> BackendOutput {
         let args = input_fn.sig.inputs.iter().map(|arg| match arg {
             FnArg::Typed(pat_type) => {
@@ -50,12 +51,18 @@ impl Backend for FluxBackend {
             quote! { ensures result: #(#ensures_exprs)&&* }
         };
 
-        let flux_attr = quote! {
+        let spec_attr = quote! {
             #[cfg_attr(flux, flux_rs::spec(
                 fn(#(#args),*) #return_type #requires_tokens #ensures_tokens
             ))]
         };
 
-        BackendOutput::new(Some(vec![flux_attr]), None)
+        let trusted_attr = if !is_trusted {
+            quote! {}
+        } else {
+            quote! {#[cfg_attr(flux, flux_rs::trusted)]}
+        };
+
+        BackendOutput::new(Some(vec![spec_attr, trusted_attr]), None)
     }
 }

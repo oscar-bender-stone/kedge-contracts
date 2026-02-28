@@ -27,5 +27,6 @@ pub trait Backend {
         input_fn: &ItemFn,
         requires_exprs: &[Expr],
         ensures_exprs: &[Expr],
+        is_trusted: bool,
     ) -> BackendOutput;
 }
